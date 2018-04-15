@@ -20,10 +20,10 @@ namespace AuthorizationCore.Services.Internals
             this.options = options;
             this.services = services;
         }
-        public AuthorizationResult TryAuthorize(string policy)
+        public PolicyResult TryAuthorize(string policy)
         {
             if (!options.Policies.TryGetValue(policy, out object policyObject))
-                return AuthorizationResult.NotHandled;
+                return PolicyResult.NotHandled;
 
             Type objectType = policyObject.GetType();
             if (IPolicyBaseType.IsAssignableFrom(objectType))
@@ -32,9 +32,9 @@ namespace AuthorizationCore.Services.Internals
             if (options.ObjectAccessors.TryGetValue(policy, out Delegate accessor))
                 return TryAuthroizeTargetPolicy(policyObject, accessor);
 
-            return AuthorizationResult.NotHandled;
+            return PolicyResult.NotHandled;
         }
-        private AuthorizationResult TryAuthorizeUserOnlyPolicy(IPolicy<TUser> policy)
+        private PolicyResult TryAuthorizeUserOnlyPolicy(IPolicy<TUser> policy)
         {
             Type objectType = policy.GetType();
             Type currentType = objectType;
@@ -61,22 +61,22 @@ namespace AuthorizationCore.Services.Internals
                 }
             }
             if (handlerType == null)
-                return AuthorizationResult.NotHandled;
+                return PolicyResult.NotHandled;
 
             object handler = ActivatorUtilities.CreateInstance(services, handlerType);
             TUser user = options.UserAccessor(services);
             MethodInfo authorizeMethod = handlerType.GetMethod("OnAuthorization");
-            return (AuthorizationResult)authorizeMethod.Invoke(handler, new object[] { user, policy });
+            return (PolicyResult)authorizeMethod.Invoke(handler, new object[] { user, policy });
         }
-        private AuthorizationResult TryAuthroizeTargetPolicy(object policy, Delegate accessor)
+        private PolicyResult TryAuthroizeTargetPolicy(object policy, Delegate accessor)
         {
             Type objectType = policy.GetType();
             Type interfaceType = objectType.GetInterfaces().FirstOrDefault(type => type.GetGenericTypeDefinition().Equals(IObjectPolicyBaseType));
             if (interfaceType == null)
-                return AuthorizationResult.NotHandled;
+                return PolicyResult.NotHandled;
             Type[] genericArgs = interfaceType.GetGenericArguments();
             if (!genericArgs[0].Equals(UserType))
-                return AuthorizationResult.NotHandled;
+                return PolicyResult.NotHandled;
             Type targetType = genericArgs[1];
 
             Type currentType = objectType;
@@ -103,18 +103,13 @@ namespace AuthorizationCore.Services.Internals
                 }
             }
             if (handlerType == null)
-                return AuthorizationResult.NotHandled;
+                return PolicyResult.NotHandled;
 
             object handler = ActivatorUtilities.CreateInstance(services, handlerType);
             TUser user = options.UserAccessor(services);
             object targetObject = accessor.DynamicInvoke(services);
             MethodInfo authorizeMethod = handlerType.GetMethod("OnAuthorization");
-            return (AuthorizationResult)authorizeMethod.Invoke(handler, new object[] { user, targetObject, policy });
-        }
-
-        public IAuthorizationExpressionBuilder CreateExpressionBuilder()
-        {
-            throw new NotImplementedException();
+            return (PolicyResult)authorizeMethod.Invoke(handler, new object[] { user, targetObject, policy });
         }
     }
 }
