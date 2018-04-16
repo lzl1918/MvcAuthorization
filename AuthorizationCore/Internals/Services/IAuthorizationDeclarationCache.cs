@@ -2,8 +2,9 @@
 using Hake.Extension.Cache;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 
-namespace AuthorizationCore.Services.Internals
+namespace AuthorizationCore.Internals.Services
 {
     internal enum AuthorizationDeclaration
     {
@@ -21,13 +22,15 @@ namespace AuthorizationCore.Services.Internals
         public string PolicyExpression { get; }
         public AuthorizationFailedAction FailedAction { get; }
         public bool FailedIfNotHandled { get; }
+        public AuthorizationFailedHandlerAttribute FailedHandler { get; }
 
-        public AuthorizationDeclarationInfo(AuthorizationDeclaration declaration, string policyExpression, AuthorizationFailedAction failedAction, bool failedIfNotHandled)
+        public AuthorizationDeclarationInfo(AuthorizationDeclaration declaration, string policyExpression, AuthorizationFailedAction failedAction, bool failedIfNotHandled, AuthorizationFailedHandlerAttribute failedHandler)
         {
             Declaration = declaration;
             PolicyExpression = policyExpression;
             FailedAction = failedAction;
             FailedIfNotHandled = failedIfNotHandled;
+            FailedHandler = failedHandler;
         }
     }
     internal sealed class AuthorizationDeclarationCache : IAuthorizationDeclarationCache

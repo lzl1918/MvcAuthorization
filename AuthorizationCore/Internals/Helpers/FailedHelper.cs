@@ -1,5 +1,5 @@
-﻿using AuthorizationCore.Services;
-using AuthorizationCore.Services.Internals;
+﻿using AuthorizationCore.Internals;
+using AuthorizationCore.Internals.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthorizationCore.Helpers
+namespace AuthorizationCore.Internal.Helpers
 {
     internal static class FailedHelper
     {

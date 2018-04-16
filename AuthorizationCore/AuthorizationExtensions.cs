@@ -1,6 +1,6 @@
 ﻿using AuthorizationCore.Attributes;
-using AuthorizationCore.Services;
-using AuthorizationCore.Services.Internals;
+using AuthorizationCore.Internals;
+using AuthorizationCore.Internals.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,14 +14,16 @@ namespace AuthorizationCore
         public static IServiceCollection AddMvcAuthorization<TUser>(this IServiceCollection services, Action<IAuthorizationOptionsBuilder<TUser>> optionsBuilder, int cacheCapacity = 100)
         {
             AuthorizationOptionsBuilder<TUser> builder = new AuthorizationOptionsBuilder<TUser>();
-            AuthorizationRequiredAttribute.AuthorizationServiceType = typeof(IAuthorizationService<TUser>);
-            AuthorizationRequiredAttribute.AuthorizationServiceTryAuthorizeMethod = AuthorizationRequiredAttribute.AuthorizationServiceType.GetMethod("TryAuthorize", BindingFlags.Public | BindingFlags.Instance);
             optionsBuilder(builder);
             services.AddSingleton<IAuthorizationOptions<TUser>>(builder.Build());
             services.AddScoped<IAuthorizationService<TUser>, AuthorizationService<TUser>>();
             services.AddSingleton<IHandlerInvokeMethodCache>(provider =>
             {
                 return new HandlerInvokeMethodCache(cacheCapacity);
+            });
+            services.AddSingleton<IAuthorizationDeclarationCache>(provider =>
+            {
+                return new AuthorizationDeclarationCache(cacheCapacity);
             });
             services.AddScoped<IAuthorizationResultAccessor, AuthorizationResultAccessor>();
             services.AddScoped<IAuthorizationResult>(provider =>

@@ -2,8 +2,8 @@
 {
     public enum PolicyResult
     {
-        Success,
-        Failed,
-        NotHandled,
+        Success = 0,
+        Failed = 1,
+        NotHandled = 2,
     }
 }

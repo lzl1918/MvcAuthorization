@@ -5,7 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Linq;
 
-namespace AuthorizationCore.Services.Internals
+namespace AuthorizationCore.Internals.Services
 {
     internal sealed class AuthorizationService<TUser> : IAuthorizationService<TUser>
     {

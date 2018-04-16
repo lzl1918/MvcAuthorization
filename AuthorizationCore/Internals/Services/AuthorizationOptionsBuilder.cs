@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AuthorizationCore.Services.Internals
+namespace AuthorizationCore.Internals.Services
 {
     internal sealed class AuthorizationOptionsBuilder<TUser> : IAuthorizationOptionsBuilder<TUser>
     {

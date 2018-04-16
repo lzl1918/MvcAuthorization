@@ -1,5 +1,5 @@
-﻿using AuthorizationCore.Helpers;
-using AuthorizationCore.Services;
+﻿using AuthorizationCore.Internal.Helpers;
+using AuthorizationCore.Internals;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,7 +8,7 @@ using System.Text;
 
 namespace AuthorizationCore.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class AuthorizationFailedHandlerAttribute : Attribute
     {
         internal object[] ConstructParameters { get; }

@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 namespace AuthorizationTest
 {
+
     public class TreeGreaterThanPolicy : IPolicy<User, Tree>
     {
 
     }
     public class TreeGreaterThanPolicyHandler : IPolicyHandler<User, Tree, TreeGreaterThanPolicy>
     {
-        public AuthorizationResult OnAuthorization(User user, Tree target, TreeGreaterThanPolicy policy)
+        public PolicyResult OnAuthorization(User user, Tree target, TreeGreaterThanPolicy policy)
         {
             if (user.Age > target.Age)
-                return AuthorizationResult.Success;
+                return PolicyResult.Success;
             else
-                return AuthorizationResult.Failed;
+                return PolicyResult.Failed;
         }
     }
 }

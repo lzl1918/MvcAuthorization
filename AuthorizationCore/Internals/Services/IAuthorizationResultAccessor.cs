@@ -1,4 +1,4 @@
-﻿namespace AuthorizationCore.Services.Internals
+﻿namespace AuthorizationCore.Internals.Services
 {
     internal interface IAuthorizationResultAccessor
     {

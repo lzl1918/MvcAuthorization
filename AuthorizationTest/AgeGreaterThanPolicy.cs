@@ -15,12 +15,12 @@ namespace AuthorizationTest
 
     public class AgeGreaterThanPolicyHandler : IPolicyHandler<User, AgeGreaterThanPolicy>
     {
-        public AuthorizationResult OnAuthorization(User user, AgeGreaterThanPolicy policy)
+        public PolicyResult OnAuthorization(User user, AgeGreaterThanPolicy policy)
         {
             if (user.Age > policy.MinAge)
-                return AuthorizationResult.Success;
+                return PolicyResult.Success;
             else
-                return AuthorizationResult.Failed;
+                return PolicyResult.Failed;
         }
     }
 

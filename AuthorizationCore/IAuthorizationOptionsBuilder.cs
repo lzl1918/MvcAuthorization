@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AuthorizationCore.Services
+namespace AuthorizationCore
 {
     public interface IAuthorizationOptionsBuilder<TUser>
     {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
 
-namespace AuthorizationCore.Helpers
+namespace AuthorizationCore.Internal.Helpers
 {
     internal static class TypeExtensions
     {

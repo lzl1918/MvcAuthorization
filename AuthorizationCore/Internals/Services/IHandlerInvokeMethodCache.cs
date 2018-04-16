@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Text;
 
-namespace AuthorizationCore.Services.Internals
+namespace AuthorizationCore.Internals.Services
 {
     internal enum InvokeMethodReturnType
     {
