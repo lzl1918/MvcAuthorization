@@ -46,22 +46,21 @@ namespace AuthorizationCore.Internals.Services
         {
             public int Compare(CompiledPageActionDescriptor x, CompiledPageActionDescriptor y)
             {
-                string xName = $"{x.PageTypeInfo.FullName}/{x.ModelTypeInfo.FullName}.{x.HandlerMethods[0].Name}";
-                string yName = $"{y.PageTypeInfo.FullName}/{y.ModelTypeInfo.FullName}.{y.HandlerMethods[0].Name}";
+                string xName = $"{x.ModelTypeInfo.FullName}.{x.HandlerMethods[0].MethodInfo.Name}";
+                string yName = $"{y.ModelTypeInfo.FullName}.{y.HandlerMethods[0].MethodInfo.Name}";
                 return xName.CompareTo(yName);
             }
 
             public bool Equals(CompiledPageActionDescriptor x, CompiledPageActionDescriptor y)
             {
                 return
-                    x.PageTypeInfo.Equals(y.PageTypeInfo) &&
                     x.ModelTypeInfo.Equals(y.ModelTypeInfo) &&
                     x.HandlerMethods[0].Equals(y.HandlerMethods[0]);
             }
 
             public int GetHashCode(CompiledPageActionDescriptor obj)
             {
-                return obj.PageTypeInfo.GetHashCode() ^ obj.ModelTypeInfo.GetHashCode() ^ obj.HandlerMethods[0].GetHashCode();
+                return obj.ModelTypeInfo.GetHashCode() ^ obj.HandlerMethods[0].GetHashCode();
             }
         }
         internal static readonly IComparer<CompiledPageActionDescriptor> CompiledPageActionDescriptorComparer = new InternalCompiledPageActionDescriptorComparer();
