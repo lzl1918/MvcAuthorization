@@ -35,23 +35,33 @@ namespace AuthorizationCore.Internals.Services
     }
     internal sealed class AuthorizationDeclarationCache : IAuthorizationDeclarationCache
     {
-        private ICache<ControllerActionDescriptor, AuthorizationDeclarationInfo> mvcCache;
-        private ICache<CompiledPageActionDescriptor, AuthorizationDeclarationInfo> pageCache;
+        private ICache<string, AuthorizationDeclarationInfo> mvcCache;
+        private ICache<string, AuthorizationDeclarationInfo> pageCache;
+        private object mvcLocker = new object();
+        private object pageLocker = new object();
 
         public AuthorizationDeclarationCache(int capacity)
         {
-            mvcCache = new Cache<ControllerActionDescriptor, AuthorizationDeclarationInfo>(capacity, ComparerCollection.ControllerActionDescriptorComparer, ComparerCollection.ControllerActionDescriptorEqualityComparer);
-            pageCache = new Cache<CompiledPageActionDescriptor, AuthorizationDeclarationInfo>(capacity, ComparerCollection.CompiledPageActionDescriptorComparer, ComparerCollection.CompiledPageActionDescriptorEqualityComparer);
+            mvcCache = new Cache<string, AuthorizationDeclarationInfo>(capacity);
+            pageCache = new Cache<string, AuthorizationDeclarationInfo>(capacity);
         }
 
         public AuthorizationDeclarationInfo Get(ControllerActionDescriptor descriptor)
         {
-            return mvcCache.Get(descriptor, CacheFallbackCollection.ControllerAuthorizationDeclarationFallback);
+            lock (mvcLocker)
+            {
+                string key = $"{descriptor.ControllerTypeInfo.FullName}.{descriptor.MethodInfo.Name}";
+                return mvcCache.Get(key, k => CacheFallbackCollection.ControllerAuthorizationDeclarationFallback(descriptor));
+            }
         }
 
         public AuthorizationDeclarationInfo Get(CompiledPageActionDescriptor descriptor)
         {
-            return pageCache.Get(descriptor, CacheFallbackCollection.PageAuthorizationDeclarationFallback);
+            lock (pageLocker)
+            {
+                string key = $"{descriptor.ModelTypeInfo.FullName}.{descriptor.HandlerMethods[0].MethodInfo.Name}";
+                return pageCache.Get(key, k => CacheFallbackCollection.PageAuthorizationDeclarationFallback(descriptor));
+            }
         }
     }
     internal interface IAuthorizationDeclarationCache
